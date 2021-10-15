@@ -263,8 +263,11 @@ sudo guix system reconfigure /mnt/c/path/to/wsl.scm
 <p>moves the file to <kbd>~/.config/guix/manifests</kbd>.
 </p>
 
-<p><kbd>guix-init.sh</kbd> can be copied to <kbd>/root/boot.sh</kbd> and the distribution started by executed <kbd>wsl -d guix --exec /bin/busybox sh -c "/root/boot.sh"</kbd> .
+<p><kbd>guix-init.sh</kbd> can be copied to <kbd>/root/boot.sh</kbd> and the distribution started by executing
 </p>
+
+<pre><code class="sh">wsl -d guix --exec /bin/busybox sh -c <span class="org-string">"/root/boot.sh"</span>
+</code></pre>
 
 <p>This is really up to the individual setup, both files may very well be incorporated into an already existing configuration. <a href="https://github.com/minikN/guix/blob/main/Systems.org#wsl">minikN</a>'s dotfiles showcase a possible approach to this.
 </p>
@@ -296,7 +299,11 @@ sudo guix system reconfigure /mnt/c/path/to/wsl.scm
 <span class="org-keyword">fi</span>
 </code></pre>
 
-<p><strong>Note:</strong> If <kbd>WSLg</kbd> is the preferred option to run GUI applications, the init script automatically sets up the necessary X socket. One only needs to <kbd>export DISPLAY</kbd>:0= somewhere in user space (<kbd>.profile</kbd>, <kbd>.bash_profile</kbd>, <kbd>...</kbd>). Do not use the provided wrapper script for this approach as it will set <kbd>$DISPLAY</kbd> wrong.
+<p><strong>Note:</strong> If <kbd>WSLg</kbd> is the preferred option to run GUI applications, the init script automatically sets up the necessary X socket. One only needs to 
+</p>
+<pre><code class="sh"><span class="org-builtin">export</span> <span class="org-variable-name">DISPLAY</span>=:0
+</code></pre>
+<p>somewhere in user space (<kbd>.profile</kbd>, <kbd>.bash_profile</kbd>, <kbd>...</kbd>). Do not use the provided wrapper script for this approach as it will set <kbd>$DISPLAY</kbd> wrong.
 </p>
 
 <p>This script has to be available somewhere in the <kbd>PATH</kbd>. It should also be named appropriately and made executable: <kbd>chmod +x run-wsl</kbd>.
