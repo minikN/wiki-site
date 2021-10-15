@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>Installing GuixSD on WSL - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">Installing GuixSD on WSL</h1><p class="blog-post-meta"></p><div><p>The Windows Subsystem for Linux enables Windows to run software, including whole distributions, written for Linux. This article goes through the process of installing GuixSD as a WSL distribution.
+<!DOCTYPE html><html lang="en"><head><!--  --><meta charset="utf-8"/><meta author="David Wilson"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><link rel="stylesheet" href="/css/bootstrap.min.css"/><link rel="stylesheet" href="/fonts/iosevka-aile/iosevka-aile.css"/><link rel="stylesheet" href="/fonts/jetbrains-mono/jetbrains-mono.css"/><link rel="stylesheet" href="/css/code.css"/><link rel="stylesheet" href="/css/site.css"/><script defer="defer" data-domain="wiki.systemcrafters.net" src="https://plausible.io/js/plausible.js"></script><title>Installing GuixSD on WSL2 - System Crafters</title></head><body><div><div class="blog-header"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-8"><div class="blog-title">System Crafters</div></div><div class="col-sm col-md"><div class="blog-description text-sm-left text-md-right text-lg-right text-xl-right"></div></div></div></div></div><div class="blog-masthead"><div class="container"><div class="row align-items-center justify-content-between"><div class="col-sm-12 col-md-12"><nav class="nav"><a class="nav-link" href="/">Main Page</a> <a class="nav-link" href="/emacs">GNU Emacs</a> <a class="nav-link" href="/guix">GNU Guix</a><a class="nav-link" href="https://systemcrafters.net">System Crafters Home</a><form class="navbar-form navbar-right" role="search" action="https://duckduckgo.com/"><div class="form-group"><input type="text" name="q" class="form-control" placeholder="Search Wiki" style="overflow: hidden;margin-top: 3%;margin-bottom: 2%;"/><input type="hidden" name="sites" value="wiki.systemcrafters.net"/></div></form> </nav></div></div></div></div></div><div class="container"><div class="row"><div class="col-sm-12 blog-main"><div class="blog-post"><h1 class="blog-post-title">Installing GuixSD on WSL2</h1><p class="blog-post-meta"></p><div><p>The Windows Subsystem for Linux enables Windows to run software, including whole distributions, written for Linux. This article goes through the process of installing GuixSD as a WSL distribution.
 </p>
 
 <p><strong>Note</strong>: GuixSD refers to the Guix System Distribution. Not Guix the package manager. This article won't cover how to install the package manager into an existing distribution (like Ubuntu or Debian), but rather how to create a custom distribution containing the full Guix system.
@@ -28,7 +28,7 @@ In any case, with an appropriate <kbd>rootfs.tgz</kbd> available, open up <kbd>P
 <pre><code class="sh">wsl --import guix /guix rootfs.tgz --version 2
 </code></pre>
 
-<p><strong>Note</strong>: The <kbd>--version 2</kbd> flag is specific to the used rootfs and must not be changed.
+<p><strong>Note</strong>: The <kbd>--version 2</kbd> flag specifies the WSL version to use and must not be changed.
 </p>
 
 <h2><a id="roll-back" class="anchor" href="#roll-back">¶</a>Roll back</h2><p>The current distribution can erased by executing
@@ -175,7 +175,7 @@ wsl-operating-system
 <p>Place the file in the same folder as the script above. Inside <kbd>PowerShell</kbd>, execute
 </p>
 
-<pre><code class="sh">wsl -d guix /bin/busybox sh -c <span class="org-string">"/mnt/c/path/to/guix-install.sh /mnt/c/path/to/wsl.scm"</span>
+<pre><code class="sh">wsl -d guix --exec /bin/busybox sh -c <span class="org-string">"/mnt/c/path/to/guix-install.sh /mnt/c/path/to/wsl.scm"</span>
 </code></pre>
 
 <p>The path is relative to the root folder of the WSL distribution. If the two files are located at <kbd>C:\Users\&lt;user&gt;\Desktop\guix</kbd> the path would then be <kbd>/mnt/c/Users/&lt;user&gt;/Desktop/guix</kbd>.
@@ -193,31 +193,39 @@ wsl-operating-system
 <p>This is to be expected. Because WSL distributions don't boot the same way a normal distribution would, Guix could not populate <kbd>/run</kbd>. More information about this can be found <a href="https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4#booting-the-guix-wsl-distro-as-if-it-were-a-guixsd-system">here</a>. This has to be done manually or rather automated via a shell script:
 </p>
 
-<pre><code class="sh"><span class="org-comment-delimiter">#</span><span class="org-comment">!/bin/</span><span class="org-keyword">sh</span>
-<span class="org-variable-name">DIR</span>=<span class="org-string">"/run/current-system"</span>
-<span class="org-keyword">if</span> [ <span class="org-negation-char">!</span> -d <span class="org-string">"$DIR"</span> ]; <span class="org-keyword">then</span>
+<pre><code class="sh"><span class="org-comment-delimiter">#</span><span class="org-comment">!/bin/</span><span class="org-keyword">busybox</span><span class="org-comment"> sh</span>
 
-ln -s none /run/current-system &amp;&gt;/dev/null
-<span class="org-builtin">export</span> <span class="org-variable-name">GUIX_NEW_SYSTEM</span>=$(readlink -f /var/guix/profiles/system)
-setsid /var/guix/profiles/system/profile/bin/guile  --no-auto-compile  $<span class="org-variable-name">GUIX_NEW_SYSTEM</span>/boot &amp;&gt;/dev/null &amp;
-sleep 1
-<span class="org-keyword">fi</span>
+<span class="org-builtin">export</span> <span class="org-variable-name">GUIX_NEW_SYSTEM</span>=$(/bin/busybox readlink -f /var/guix/profiles/system)
+<span class="org-comment-delimiter"># </span><span class="org-comment">$GUIX_NEW_SYSTEM/boot needs this to exist even though /run is expected to be empty.</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">I installed GuixSD in a proper VM and /run is not on tmpfs, so I'm not sure.</span>
+/bin/busybox ln -s none /run/current-system
+setsid /var/guix/profiles/system/profile/bin/guile --no-auto-compile $<span class="org-variable-name">GUIX_NEW_SYSTEM</span>/boot &gt;/dev/null &amp;
 
-<span class="org-builtin">export</span> <span class="org-variable-name">GUIX_PROFILE</span>=/run/current-system
-source <span class="org-string">"$GUIX_PROFILE/etc/profile"</span>
+/bin/busybox sleep 3
+source /etc/profile
 
+<span class="org-comment-delimiter"># </span><span class="org-comment">why are these permissions not there in the first place?</span>
 <span class="org-keyword">for</span> f<span class="org-keyword"> in</span> ping su sudo; <span class="org-keyword">do</span>
         chmod 4755 $(readlink -f $(which $<span class="org-variable-name">f</span>))
 <span class="org-keyword">done</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Setting up WSLg</span>
+<span class="org-keyword">if</span> [ -d <span class="org-string">"/mnt/wslg"</span> ]; <span class="org-keyword">then</span>
+        rm -r /tmp/.X11-unix
+        ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix
+        <span class="org-comment-delimiter"># </span><span class="org-comment">Add "export DISPLAY=:0" in your .bashrc!</span>
+<span class="org-keyword">fi</span>
+
+su -l &lt;user&gt;
 </code></pre>
 
-<p>Copy the script to the same folder like the other scripts and execute it with
+<p>Change the last line to your user name and copy the script to the same folder like the other scripts and execute it with
 </p>
 
-<pre><code class="sh">wsl -d guix /bin/busybox sh -c <span class="org-string">"/mnt/c/path/to/guix-init.sh"</span>
+<pre><code class="sh">wsl -d guix --exec /bin/busybox sh -c <span class="org-string">"/mnt/c/path/to/guix-init.sh"</span>
 </code></pre>
 
-<p>The command should not produce any output. This script <em>can</em> be safely run every time one logs into the distribution (See <a href="#tidying-up">Tidying up</a>), however, it <em>needs</em> to be run after rebooting the host system or executing <kbd>wsl -t guix</kbd>. After it's done, run <kbd>wsl -d guix</kbd> to log into the distribution.
+<p>This script <em>can</em> be safely run every time one logs into the distribution (See <a href="#tidying-up">Tidying up</a>), however, it <em>needs</em> to be run after rebooting the host system or executing <kbd>wsl -t guix</kbd> or <kbd>wsl --shutdown</kbd>. The script will automatically log your user in after setting up the system.
 </p>
 
 <p>A bash prompt should be waiting for input. Congratulations.
@@ -255,7 +263,7 @@ sudo guix system reconfigure /mnt/c/path/to/wsl.scm
 <p>moves the file to <kbd>~/.config/guix/manifests</kbd>.
 </p>
 
-<p><kbd>guix-init.sh</kbd> can be copied to <kbd>/root/boot.sh</kbd> and the distribution started by executed <kbd>wsl -d guix /bin/busybox sh -c "/root/boot.sh"</kbd>. <kbd>su -l &lt;user&gt;</kbd> may be appended to the script to automatically switch to the main user.
+<p><kbd>guix-init.sh</kbd> can be copied to <kbd>/root/boot.sh</kbd> and the distribution started by executed <kbd>wsl -d guix --exec /bin/busybox sh -c "/root/boot.sh"</kbd> .
 </p>
 
 <p>This is really up to the individual setup, both files may very well be incorporated into an already existing configuration. <a href="https://github.com/minikN/guix/blob/main/Systems.org#wsl">minikN</a>'s dotfiles showcase a possible approach to this.
@@ -281,13 +289,15 @@ sudo guix system reconfigure /mnt/c/path/to/wsl.scm
 </p>
 
 <pre><code class="sh"><span class="org-keyword">if</span> uname -r | grep -q <span class="org-string">'microsoft'</span>; <span class="org-keyword">then</span>
-    . $<span class="org-variable-name">HOME</span>/.profile <span class="org-comment-delimiter"># </span><span class="org-comment">Change this path accordingly</span>
     <span class="org-builtin">export</span> <span class="org-variable-name">DISPLAY</span>=$(cat /etc/resolv.conf | grep nameserver | awk <span class="org-string">'{print $2; exit;}'</span>):0.0
     <span class="org-builtin">export</span> <span class="org-variable-name">LIBGL_ALWAYS_INDIRECT</span>=1
     <span class="org-builtin">export</span> <span class="org-variable-name">XCURSOR_SIZE</span>=16
     setsid $<span class="org-variable-name">1</span>
 <span class="org-keyword">fi</span>
 </code></pre>
+
+<p><strong>Note:</strong> If <kbd>WSLg</kbd> is the preferred option to run GUI applications, the init script automatically sets up the necessary X socket. One only needs to <kbd>export DISPLAY</kbd>:0= somewhere in user space (<kbd>.profile</kbd>, <kbd>.bash_profile</kbd>, <kbd>...</kbd>). Do not use the provided wrapper script for this approach as it will set <kbd>$DISPLAY</kbd> wrong.
+</p>
 
 <p>This script has to be available somewhere in the <kbd>PATH</kbd>. It should also be named appropriately and made executable: <kbd>chmod +x run-wsl</kbd>.
 </p>
